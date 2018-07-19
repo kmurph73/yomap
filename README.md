@@ -1,6 +1,6 @@
 ## brunchmap (yomap v2)
 
-This is v2 of [yomap](https://github.com/shmay/yomap) that uses [brunch](https://github.com/brunch/brunch) instead of yeoman.
+This is v2 of [yomap_old](https://github.com/shmay/yomap) that uses [brunch](https://github.com/brunch/brunch) instead of yeoman.
 
 Tech: es6, bootstrap 4, some lodash, and google maps.  No more backbone/coffeescript.
 
