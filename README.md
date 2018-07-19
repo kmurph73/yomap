@@ -2,7 +2,7 @@
 
 This is v2 of [yomap v1](https://github.com/shmay/yomap_old) that uses [brunch](https://github.com/brunch/brunch) instead of yeoman.
 
-Tech: es6, bootstrap 4, some lodash, and google maps.  No more backbone/coffeescript.
+Tech: es6, bootstrap 4, some lodash, and google maps.  KISS.  No more backbone/coffeescript.
 
 ### Brunch + Babel/ES6
 
