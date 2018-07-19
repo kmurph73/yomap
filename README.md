@@ -1,12 +1,18 @@
-# Brunch + Babel/ES6
+## brunchmap (yomap v2)
+
+This is v2 of [yomap](https://github.com/shmay/yomap) that uses [brunch](https://github.com/brunch/brunch) instead of yeoman.
+
+Tech: es6, bootstrap 4, some lodash, and google maps.  No more backbone/coffeescript.
+
+### Brunch + Babel/ES6
 
 This is a modern JS skeleton for [Brunch](http://brunch.io).
 
-## Installation
+#### Installation
 
 Clone this repo manually or use `brunch new dir -s es6`
 
-## Getting started
+#### Getting started
 
 * Install (if you don't have them):
     * [Node.js](http://nodejs.org): `brew install node` on OS X
@@ -20,7 +26,7 @@ Clone this repo manually or use `brunch new dir -s es6`
     * Place static files you want to be copied from `app/assets/` to `public/`.
     * [Brunch site](http://brunch.io), [Getting started guide](https://github.com/brunch/brunch-guide#readme)
 
-## ES-next
+#### ES-next
 
 To use proposed JS features not included into ES6, do this:
 
