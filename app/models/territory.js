@@ -1,8 +1,11 @@
 import find from 'lodash/find';
 
+import {gmapifyPolygons} from './../map_util.js';
+
 class Territory {
   constructor(attrs) {
     this.polygons = [];
+    this.mappedPolygons = [];
 
     Object.assign(this, attrs);
     this.id = this.getId()
@@ -40,21 +43,41 @@ class Territory {
     const root = 'https://s3-us-west-2.amazonaws.com/yodap'
     var url;
 
-    if (self.type == 'country') {
-      url = `${root}/countries/${self.abbrev}}.json`
-    } else if (self.type == 'state') {
+    if (this.type == 'country') {
+      url = `${root}/countries/${this.abbrev}.json`
+    } else if (this.type == 'state') {
       url = `${root}/states/${this.abbrev}.json`
-    } else if (self.type == 'city') {
+    } else if (this.type == 'city') {
       url = `${root}/cities/${this.country}/${this.state}/${this.terse}.json`
     }
 
     return url;
   }
 
-  fetchPoints() {
-    let url = getURL();
-    $.getJSON(url).then((resp) => {
+  getCenter() {
+    let bounds = new google.maps.LatLngBounds()
+    let polygons = this.polygons
+    let points = polygons[0][0]
+
+    points.forEach((p) => {
+      bounds.extend(p)
     })
+
+    return bounds.getCenter()
+  }
+
+  fetchPoints() {
+    let url = this.getURL();
+
+    $.getJSON({
+      url: url,
+      success: (resp) => {
+        this.polygons = gmapifyPolygons(resp.polygons);
+        window.mapView.addTerritory(this);
+      },
+      error: (err) => {
+      }
+    });
   }
 }
 

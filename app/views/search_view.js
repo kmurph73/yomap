@@ -38,6 +38,7 @@ class SearchView {
     setTimeout(() => this.closeDropdown(), 5)
 
     let t = Territory.findById(ele.getAttribute('data-id'))
+    t.fetchPoints();
     window.territoryView.addTerritory(t)
   }
 
