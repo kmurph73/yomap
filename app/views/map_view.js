@@ -9,6 +9,10 @@ class MapView {
     t.reset();
   }
 
+  bringtoCenter(t) {
+    t.bringtoCenter();
+  }
+
   gotoTerritory(t) {
     window.map.setCenter(t.getCenter())
 

@@ -270,6 +270,7 @@ var Polygon = function () {
 
     this.territory = territory;
     this.originalCoords = this.coords = coords;
+    this.originalCenter = this.getCenter();
     this.accumulatedLatDiff = 0;
     this.accumulatedLngDiff = 0;
   }
@@ -357,6 +358,9 @@ var Polygon = function () {
     value: function move(latDiff, lngDiff) {
       this.removeFromMap();
 
+      this.accumulatedLatDiff = latDiff;
+      this.accumulatedLngDiff = lngDiff;
+
       this.coords = (0, _map2.default)(this.originalCoords, function (coords) {
         return (0, _map2.default)(coords, function (c) {
           return new google.maps.LatLng(c.lat() - latDiff, c.lng() - lngDiff);
@@ -372,9 +376,6 @@ var Polygon = function () {
 
       this.territory.polygons.forEach(function (p) {
         if (p === _this) return;
-
-        p.accumulatedLatDiff = latDiff;
-        p.accumulatedLngDiff = lngDiff;
 
         p.move(latDiff, lngDiff);
       });
@@ -462,6 +463,18 @@ var Territory = function () {
       return name;
     }
   }, {
+    key: 'bringtoCenter',
+    value: function bringtoCenter() {
+      var polygon_center = this.polygons[0].getCenter();
+      var map_center = window.map.getCenter();
+      var latDiff = polygon_center.lat() - map_center.lat();
+      var lngDiff = polygon_center.lng() - map_center.lng();
+
+      this.polygons.forEach(function (p) {
+        p.move(latDiff, lngDiff);
+      });
+    }
+  }, {
     key: 'badgeClass',
     value: function badgeClass() {
       switch (this.type) {
@@ -537,7 +550,11 @@ var Territory = function () {
 exports.default = Territory;
 });
 
-require.register("views/map_view.js", function(exports, require, module) {
+require.register("vendor.js", function(exports, require, module) {
+"use strict";
+});
+
+;require.register("views/map_view.js", function(exports, require, module) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -565,6 +582,11 @@ var MapView = function () {
     key: 'resetTerritory',
     value: function resetTerritory(t) {
       t.reset();
+    }
+  }, {
+    key: 'bringtoCenter',
+    value: function bringtoCenter(t) {
+      t.bringtoCenter();
     }
   }, {
     key: 'gotoTerritory',
@@ -863,6 +885,8 @@ var TerritoryView = function () {
         window.mapView.resetTerritory(territory);
       } else if (t.hasClass('goto')) {
         window.mapView.gotoTerritory(territory);
+      } else if (t.hasClass('bringtocenter')) {
+        window.mapView.bringtoCenter(territory);
       } else if (t.hasClass('remove')) {
         var dropdown = this.territoryDiv.find('div.dropdown[data-id="' + territory.id + '"]');
         dropdown.remove();
@@ -879,7 +903,7 @@ var TerritoryView = function () {
   }, {
     key: 'renderTerritory',
     value: function renderTerritory(t) {
-      return '\n      <div class="dropdown pl-2" data-id=\'' + t.id + '\'>\n        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">\n          ' + t.name + '\n        </button>\n        <div class="dropdown-menu">\n          <a class="dropdown-item reset" href="#">Reset</a>\n          <a class="dropdown-item goto" href="#">Go to</a>\n          <div class="dropdown-divider"></div>\n          <a class="dropdown-item remove" href="#">Remove</a>\n        </div>\n      </div>';
+      return '\n      <div class="dropdown pl-2" data-id=\'' + t.id + '\'>\n        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">\n          ' + t.name + '\n        </button>\n        <div class="dropdown-menu">\n          <a class="dropdown-item reset" href="#">Reset</a>\n          <a class="dropdown-item goto" href="#">Go to</a>\n          <a class="dropdown-item bringtocenter" href="#">Bring to center</a>\n          <div class="dropdown-divider"></div>\n          <a class="dropdown-item remove" href="#">Remove</a>\n        </div>\n      </div>';
     }
   }]);
 

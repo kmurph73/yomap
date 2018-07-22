@@ -5,6 +5,7 @@ class Polygon {
   constructor(coords, territory) {
     this.territory = territory;
     this.originalCoords = this.coords = coords;
+    this.originalCenter = this.getCenter()
     this.accumulatedLatDiff = 0
     this.accumulatedLngDiff = 0
   }
@@ -78,6 +79,9 @@ class Polygon {
   move(latDiff, lngDiff) {
     this.removeFromMap()
 
+    this.accumulatedLatDiff = latDiff
+    this.accumulatedLngDiff = lngDiff
+
     this.coords = map(this.originalCoords, (coords) => {
       return map(coords, (c) => {
         return new google.maps.LatLng(c.lat() - latDiff, c.lng() - lngDiff)
@@ -90,9 +94,6 @@ class Polygon {
   movePolygons(latDiff, lngDiff) {
     this.territory.polygons.forEach((p) => {
       if (p === this) return
-
-      p.accumulatedLatDiff = latDiff
-      p.accumulatedLngDiff = lngDiff
 
       p.move(latDiff, lngDiff)
     })

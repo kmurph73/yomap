@@ -40,6 +40,17 @@ class Territory {
     return name;
   }
 
+  bringtoCenter() {
+    let polygon_center = this.polygons[0].getCenter();
+    let map_center = window.map.getCenter()
+    let latDiff = polygon_center.lat() - map_center.lat()
+    let lngDiff = polygon_center.lng() - map_center.lng()
+
+    this.polygons.forEach((p) => {
+      p.move(latDiff, lngDiff);
+    });
+  }
+
   badgeClass() {
     switch(this.type) {
       case 'city': return 'info'
