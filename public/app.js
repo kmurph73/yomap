@@ -373,6 +373,9 @@ var Polygon = function () {
       this.territory.polygons.forEach(function (p) {
         if (p === _this) return;
 
+        p.accumulatedLatDiff = latDiff;
+        p.accumulatedLngDiff = lngDiff;
+
         p.move(latDiff, lngDiff);
       });
     }
@@ -489,7 +492,6 @@ var Territory = function () {
   }, {
     key: 'getCenter',
     value: function getCenter() {
-      var bounds = new google.maps.LatLngBounds();
       var polygon = this.polygons[0];
       return polygon.getCenter();
     }

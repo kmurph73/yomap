@@ -91,6 +91,9 @@ class Polygon {
     this.territory.polygons.forEach((p) => {
       if (p === this) return
 
+      p.accumulatedLatDiff = latDiff
+      p.accumulatedLngDiff = lngDiff
+
       p.move(latDiff, lngDiff)
     })
   }

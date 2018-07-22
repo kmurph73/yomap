@@ -68,7 +68,6 @@ class Territory {
   }
 
   getCenter() {
-    let bounds = new google.maps.LatLngBounds()
     let polygon = this.polygons[0];
     return polygon.getCenter();
   }
