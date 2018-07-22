@@ -5,24 +5,19 @@ class Polygon {
   constructor(coords, territory) {
     this.territory = territory;
     this.originalCoords = this.coords = coords;
-    this.originalCenter = this.getCenter()
-    this.accumulatedLatDiff = 0
-    this.accumulatedLngDiff = 0
+    this.originalCenter = this.center = this.getCenter()
   }
 
   dragStart(e) {
-    this.startingLat = e.latLng.lat()
-    this.startingLng = e.latLng.lng()
   }
 
   dragEnd(e) {
-    this.accumulatedLatDiff += (this.startingLat - e.latLng.lat())
-    this.accumulatedLngDiff += (this.startingLng - e.latLng.lng())
-
     this.coords = this.gmapPolygon.getPaths().getArray().map(c => c.getArray().map(j => j))
 
+    this.center = this.getCenter()
+
     if (window.cmdPressed) {
-      this.movePolygons(this.accumulatedLatDiff, this.accumulatedLngDiff);
+      this.movePolygons();
     }
   }
 
@@ -53,7 +48,7 @@ class Polygon {
 
   getCenter() {
     let bounds = new google.maps.LatLngBounds()
-    let points = this.originalCoords[0]
+    let points = this.coords[0]
 
     points.forEach((p) => {
       bounds.extend(p)
@@ -77,21 +72,14 @@ class Polygon {
   }
 
   move(latDiff, lngDiff) {
-    this.removeFromMap()
-
-    this.accumulatedLatDiff = latDiff
-    this.accumulatedLngDiff = lngDiff
-
-    this.coords = map(this.originalCoords, (coords) => {
-      return map(coords, (c) => {
-        return new google.maps.LatLng(c.lat() - latDiff, c.lng() - lngDiff)
-      });
-    })
-
-    this.addToMap();
+    let lat = this.originalCenter.lat() + latDiff;
+    let lng = this.originalCenter.lng() + lngDiff;
+    this.gmapPolygon.moveTo(new google.maps.LatLng(lat, lng));
   }
 
-  movePolygons(latDiff, lngDiff) {
+  movePolygons() {
+    let latDiff = this.center.lat() - this.originalCenter.lat()
+    let lngDiff = this.center.lng() - this.originalCenter.lng()
     this.territory.polygons.forEach((p) => {
       if (p === this) return
 

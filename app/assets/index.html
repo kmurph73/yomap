@@ -61,10 +61,12 @@
         zoom: 5,
         mapTypeId: google.maps.MapTypeId.TERRAIN
       });
+
+      window.initMoveTo();
     }
   </script>
 
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCi7b7zjHjApEvL55YdSedgZQmbp_OVrLo&callback=initMap" async defer></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCi7b7zjHjApEvL55YdSedgZQmbp_OVrLo&libraries=geometry&callback=initMap" async defer></script>
 
   <div id='modal' class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
