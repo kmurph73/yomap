@@ -1,0 +1,66 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	0.0.0	/9323929/
+AnonymousFunction51872b1b0100	app/map_util.js	/^  return map(points, function(point) {$/;"	f	function:gmapifyPoints
+AnonymousFunction51872b1b0200	app/map_util.js	/^  return map(polygons, function(poly) {$/;"	f	function:gmapifyPolygons
+AnonymousFunction51872b1b0300	app/map_util.js	/^    innerCoords = map(poly.innerCoords, function(coords) {$/;"	f	function:gmapifyPolygons.AnonymousFunction51872b1b0200
+AnonymousFunction51872b1b0400	app/map_util.js	/^  return reject(coords, function(point) {$/;"	f	function:purgeLonePoints
+AnonymousFunction9630058d0100	app/views/search_view.js	/^      success: function(places) {$/;"	f	function:dropdownMenu
+AnonymousFunctiona4c57d520100	app/initialize.js	/^$(window).keydown(function(evt) {$/;"	f
+AnonymousFunctiona4c57d520200	app/initialize.js	/^}).keyup(function(evt) {$/;"	f
+MapView	app/views/map_view.js	/^class MapView {$/;"	c
+Polygon	app/models/polygon.js	/^class Polygon {$/;"	c
+SearchView	app/views/search_view.js	/^class SearchView {$/;"	c
+Territory	app/models/territory.js	/^class Territory {$/;"	c
+TerritoryView	app/views/territory_view.js	/^class TerritoryView {$/;"	c
+addItem	app/views/search_view.js	/^  addItem(ele) {$/;"	m	class:SearchView
+addPolygon	app/models/territory.js	/^  addPolygon(polygon) {$/;"	m	class:Territory
+addPolygons	app/models/territory.js	/^  addPolygons() {$/;"	m	class:Territory
+addTerritory	app/views/map_view.js	/^  addTerritory(t) {$/;"	m	class:MapView
+addTerritory	app/views/territory_view.js	/^  addTerritory(t) {$/;"	m	class:TerritoryView
+addToMap	app/models/polygon.js	/^  addToMap() {$/;"	m	class:Polygon
+badgeClass	app/models/territory.js	/^  badgeClass() {$/;"	m	class:Territory
+clickDropdownItem	app/views/search_view.js	/^  clickDropdownItem(e) {$/;"	m	class:SearchView
+clickTerritory	app/views/territory_view.js	/^  clickTerritory(e) {$/;"	m	class:TerritoryView
+closeDropdown	app/views/search_view.js	/^  closeDropdown() {$/;"	m	class:SearchView
+constructor	app/models/polygon.js	/^  constructor(coords, territory) {$/;"	m	class:Polygon
+constructor	app/models/territory.js	/^  constructor(attrs) {$/;"	m	class:Territory
+constructor	app/views/map_view.js	/^  constructor() {$/;"	m	class:MapView
+constructor	app/views/search_view.js	/^  constructor() {$/;"	m	class:SearchView
+constructor	app/views/territory_view.js	/^  constructor() {$/;"	m	class:TerritoryView
+createGmapPolygon	app/models/polygon.js	/^  createGmapPolygon() {$/;"	m	class:Polygon
+dragEnd	app/models/polygon.js	/^  dragEnd(e) {$/;"	m	class:Polygon
+dragStart	app/models/polygon.js	/^  dragStart(e) {$/;"	m	class:Polygon
+fetchPoints	app/models/territory.js	/^  fetchPoints() {$/;"	m	class:Territory
+findById	app/models/territory.js	/^  static findById(id) {$/;"	m	class:Territory
+findMatches	app/views/search_view.js	/^  findMatches(query) {$/;"	m	class:SearchView
+friendlyName	app/models/territory.js	/^  friendlyName() {$/;"	m	class:Territory
+getCenter	app/models/territory.js	/^  getCenter() {$/;"	m	class:Territory
+getId	app/models/territory.js	/^  getId() {$/;"	m	class:Territory
+getURL	app/models/territory.js	/^  getURL() {$/;"	m	class:Territory
+gmapifyPoints	app/map_util.js	/^var gmapifyPoints = function(points) {$/;"	f
+gmapifyPolygons	app/map_util.js	/^export const gmapifyPolygons = function(polygons) {$/;"	f
+goDown	app/views/search_view.js	/^  goDown() { this.moveSelection(1) }$/;"	m	class:SearchView
+goUp	app/views/search_view.js	/^  goUp() { this.moveSelection(-1) }$/;"	m	class:SearchView
+gotoTerritory	app/views/map_view.js	/^  gotoTerritory(t) {$/;"	m	class:MapView
+hitEnter	app/views/search_view.js	/^  hitEnter() {$/;"	m	class:SearchView
+hitEsc	app/views/search_view.js	/^  hitEsc() {$/;"	m	class:SearchView
+move	app/models/polygon.js	/^  move(latDiff, lngDiff) {$/;"	m	class:Polygon
+movePolygons	app/models/polygon.js	/^  movePolygons(latDiff, lngDiff) {$/;"	m	class:Polygon
+moveSelection	app/views/search_view.js	/^  moveSelection(dir) {$/;"	m	class:SearchView
+onFocus	app/views/search_view.js	/^  onFocus(e) {$/;"	m	class:SearchView
+onInput	app/views/search_view.js	/^  onInput(e) {$/;"	m	class:SearchView
+onKeydown	app/views/search_view.js	/^  onKeydown(e) {$/;"	m	class:SearchView
+openDropdown	app/views/search_view.js	/^  openDropdown() {$/;"	m	class:SearchView
+purgeLonePoints	app/map_util.js	/^var purgeLonePoints = function(coords) {$/;"	f
+remove	app/models/polygon.js	/^  remove() {$/;"	m	class:Polygon
+remove	app/models/territory.js	/^  remove() {$/;"	m	class:Territory
+removeFromMap	app/models/polygon.js	/^  removeFromMap() {$/;"	m	class:Polygon
+removeTerritory	app/views/map_view.js	/^  removeTerritory(t) {$/;"	m	class:MapView
+renderDropdownHtml	app/views/search_view.js	/^  renderDropdownHtml(matches) {$/;"	m	class:SearchView
+renderTerritory	app/views/territory_view.js	/^  renderTerritory(t) {$/;"	m	class:TerritoryView
+resetTerritory	app/views/map_view.js	/^  resetTerritory(t) {$/;"	m	class:MapView

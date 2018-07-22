@@ -16,6 +16,10 @@ class Territory {
     return [this.type, this.abbrev || this.terse].join('-')
   }
 
+  reset() {
+    this.polygons.forEach(p => p.reset())
+  }
+
   remove() {
     this.polygons.forEach(p => p.remove())
   }
@@ -65,14 +69,8 @@ class Territory {
 
   getCenter() {
     let bounds = new google.maps.LatLngBounds()
-    let polygons = this.polygons
-    let points = polygons[0][0]
-
-    points.forEach((p) => {
-      bounds.extend(p)
-    })
-
-    return bounds.getCenter()
+    let polygon = this.polygons[0];
+    return polygon.getCenter();
   }
 
   addPolygons() {

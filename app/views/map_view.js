@@ -6,8 +6,7 @@ class MapView {
   }
 
   resetTerritory(t) {
-    this.removeTerritory(t);
-    this.addTerritory(t);
+    t.reset();
   }
 
   gotoTerritory(t) {

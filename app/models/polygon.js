@@ -37,9 +37,28 @@ class Polygon {
     this.gmapPolygon.setMap(null);
   }
 
+  reset() {
+    this.accumulatedLatDiff = 0
+    this.accumulatedLngDiff = 0
+    this.coords = this.originalCoords
+    this.removeFromMap()
+    this.addToMap()
+  }
+
   remove() {
     this.removeFromMap();
-    this.territory.polygons = reject(this.territory.polygons, p => p === this);
+    //this.territory.polygons = reject(this.territory.polygons, p => p === this);
+  }
+
+  getCenter() {
+    let bounds = new google.maps.LatLngBounds()
+    let points = this.originalCoords[0]
+
+    points.forEach((p) => {
+      bounds.extend(p)
+    })
+
+    return bounds.getCenter()
   }
 
   createGmapPolygon() {

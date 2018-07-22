@@ -311,14 +311,31 @@ var Polygon = function () {
       this.gmapPolygon.setMap(null);
     }
   }, {
+    key: 'reset',
+    value: function reset() {
+      this.accumulatedLatDiff = 0;
+      this.accumulatedLngDiff = 0;
+      this.coords = this.originalCoords;
+      this.removeFromMap();
+      this.addToMap();
+    }
+  }, {
     key: 'remove',
     value: function remove() {
-      var _this = this;
-
       this.removeFromMap();
-      this.territory.polygons = (0, _reject2.default)(this.territory.polygons, function (p) {
-        return p === _this;
+      //this.territory.polygons = reject(this.territory.polygons, p => p === this);
+    }
+  }, {
+    key: 'getCenter',
+    value: function getCenter() {
+      var bounds = new google.maps.LatLngBounds();
+      var points = this.originalCoords[0];
+
+      points.forEach(function (p) {
+        bounds.extend(p);
       });
+
+      return bounds.getCenter();
     }
   }, {
     key: 'createGmapPolygon',
@@ -351,10 +368,10 @@ var Polygon = function () {
   }, {
     key: 'movePolygons',
     value: function movePolygons(latDiff, lngDiff) {
-      var _this2 = this;
+      var _this = this;
 
       this.territory.polygons.forEach(function (p) {
-        if (p === _this2) return;
+        if (p === _this) return;
 
         p.move(latDiff, lngDiff);
       });
@@ -408,6 +425,13 @@ var Territory = function () {
     key: 'getId',
     value: function getId() {
       return [this.type, this.abbrev || this.terse].join('-');
+    }
+  }, {
+    key: 'reset',
+    value: function reset() {
+      this.polygons.forEach(function (p) {
+        return p.reset();
+      });
     }
   }, {
     key: 'remove',
@@ -466,14 +490,8 @@ var Territory = function () {
     key: 'getCenter',
     value: function getCenter() {
       var bounds = new google.maps.LatLngBounds();
-      var polygons = this.polygons;
-      var points = polygons[0][0];
-
-      points.forEach(function (p) {
-        bounds.extend(p);
-      });
-
-      return bounds.getCenter();
+      var polygon = this.polygons[0];
+      return polygon.getCenter();
     }
   }, {
     key: 'addPolygons',
@@ -544,8 +562,7 @@ var MapView = function () {
   _createClass(MapView, [{
     key: 'resetTerritory',
     value: function resetTerritory(t) {
-      this.removeTerritory(t);
-      this.addTerritory(t);
+      t.reset();
     }
   }, {
     key: 'gotoTerritory',
