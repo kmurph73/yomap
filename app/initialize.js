@@ -11,3 +11,13 @@ document.addEventListener('DOMContentLoaded', () => {
   window.territoryView = new TerritoryView;
   window.mapView = new MapView;
 });
+
+$(window).keydown(function(evt) {
+  if (evt.which == 91) { // cmd
+    window.cmdPressed = true;
+  }
+}).keyup(function(evt) {
+  if (evt.which == 91) { // cmd
+    window.cmdPressed = false;
+  }
+});

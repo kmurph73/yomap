@@ -181,6 +181,18 @@ document.addEventListener('DOMContentLoaded', function () {
   window.territoryView = new _territory_view2.default();
   window.mapView = new _map_view2.default();
 });
+
+$(window).keydown(function (evt) {
+  if (evt.which == 91) {
+    // cmd
+    window.cmdPressed = true;
+  }
+}).keyup(function (evt) {
+  if (evt.which == 91) {
+    // cmd
+    window.cmdPressed = false;
+  }
+});
 });
 
 require.register("map_util.js", function(exports, require, module) {
@@ -231,6 +243,130 @@ var purgeLonePoints = function purgeLonePoints(coords) {
 };
 });
 
+require.register("models/polygon.js", function(exports, require, module) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _map = require('lodash/map');
+
+var _map2 = _interopRequireDefault(_map);
+
+var _reject = require('lodash/reject');
+
+var _reject2 = _interopRequireDefault(_reject);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Polygon = function () {
+  function Polygon(coords, territory) {
+    _classCallCheck(this, Polygon);
+
+    this.territory = territory;
+    this.originalCoords = this.coords = coords;
+    this.accumulatedLatDiff = 0;
+    this.accumulatedLngDiff = 0;
+  }
+
+  _createClass(Polygon, [{
+    key: 'dragStart',
+    value: function dragStart(e) {
+      this.startingLat = e.latLng.lat();
+      this.startingLng = e.latLng.lng();
+    }
+  }, {
+    key: 'dragEnd',
+    value: function dragEnd(e) {
+      this.accumulatedLatDiff += this.startingLat - e.latLng.lat();
+      this.accumulatedLngDiff += this.startingLng - e.latLng.lng();
+
+      this.coords = this.gmapPolygon.getPaths().getArray().map(function (c) {
+        return c.getArray().map(function (j) {
+          return j;
+        });
+      });
+
+      if (window.cmdPressed) {
+        this.movePolygons(this.accumulatedLatDiff, this.accumulatedLngDiff);
+      }
+    }
+  }, {
+    key: 'addToMap',
+    value: function addToMap() {
+      this.createGmapPolygon();
+
+      google.maps.event.addListener(this.gmapPolygon, 'dragstart', this.dragStart.bind(this));
+      google.maps.event.addListener(this.gmapPolygon, 'dragend', this.dragEnd.bind(this));
+    }
+  }, {
+    key: 'removeFromMap',
+    value: function removeFromMap() {
+      google.maps.event.clearInstanceListeners(this.gmapPolygon);
+      this.gmapPolygon.setMap(null);
+    }
+  }, {
+    key: 'remove',
+    value: function remove() {
+      var _this = this;
+
+      this.removeFromMap();
+      this.territory.polygons = (0, _reject2.default)(this.territory.polygons, function (p) {
+        return p === _this;
+      });
+    }
+  }, {
+    key: 'createGmapPolygon',
+    value: function createGmapPolygon() {
+      this.gmapPolygon = new google.maps.Polygon({
+        map: window.map,
+        paths: this.coords,
+        strokeColor: "#FF0000",
+        strokeOpacity: 0.8,
+        strokeWeight: 1,
+        fillColor: "#FF0000",
+        fillOpacity: 0.35,
+        draggable: true,
+        geodesic: true
+      });
+    }
+  }, {
+    key: 'move',
+    value: function move(latDiff, lngDiff) {
+      this.removeFromMap();
+
+      this.coords = (0, _map2.default)(this.originalCoords, function (coords) {
+        return (0, _map2.default)(coords, function (c) {
+          return new google.maps.LatLng(c.lat() - latDiff, c.lng() - lngDiff);
+        });
+      });
+
+      this.addToMap();
+    }
+  }, {
+    key: 'movePolygons',
+    value: function movePolygons(latDiff, lngDiff) {
+      var _this2 = this;
+
+      this.territory.polygons.forEach(function (p) {
+        if (p === _this2) return;
+
+        p.move(latDiff, lngDiff);
+      });
+    }
+  }]);
+
+  return Polygon;
+}();
+
+exports.default = Polygon;
+});
+
 require.register("models/territory.js", function(exports, require, module) {
 'use strict';
 
@@ -244,6 +380,14 @@ var _find = require('lodash/find');
 
 var _find2 = _interopRequireDefault(_find);
 
+var _map = require('lodash/map');
+
+var _map2 = _interopRequireDefault(_map);
+
+var _polygon = require('models/polygon.js');
+
+var _polygon2 = _interopRequireDefault(_polygon);
+
 var _map_util = require('./../map_util.js');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -255,7 +399,6 @@ var Territory = function () {
     _classCallCheck(this, Territory);
 
     this.polygons = [];
-    this.mappedPolygons = [];
 
     Object.assign(this, attrs);
     this.id = this.getId();
@@ -265,6 +408,18 @@ var Territory = function () {
     key: 'getId',
     value: function getId() {
       return [this.type, this.abbrev || this.terse].join('-');
+    }
+  }, {
+    key: 'remove',
+    value: function remove() {
+      this.polygons.forEach(function (p) {
+        return p.remove();
+      });
+    }
+  }, {
+    key: 'addPolygon',
+    value: function addPolygon(polygon) {
+      this.polygons.push(polygon);
     }
   }, {
     key: 'friendlyName',
@@ -321,6 +476,13 @@ var Territory = function () {
       return bounds.getCenter();
     }
   }, {
+    key: 'addPolygons',
+    value: function addPolygons() {
+      this.polygons.forEach(function (p) {
+        return p.addToMap();
+      });
+    }
+  }, {
     key: 'fetchPoints',
     value: function fetchPoints() {
       var _this = this;
@@ -330,7 +492,11 @@ var Territory = function () {
       $.getJSON({
         url: url,
         success: function success(resp) {
-          _this.polygons = (0, _map_util.gmapifyPolygons)(resp.polygons);
+          var coords = (0, _map_util.gmapifyPolygons)(resp.polygons);
+          var polygons = (0, _map2.default)(coords, function (c) {
+            return new _polygon2.default(c, _this);
+          });
+          _this.polygons = polygons;
           window.mapView.addTerritory(_this);
         },
         error: function error(err) {}
@@ -359,6 +525,12 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _polygon = require('models/polygon.js');
+
+var _polygon2 = _interopRequireDefault(_polygon);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -398,36 +570,12 @@ var MapView = function () {
   }, {
     key: 'removeTerritory',
     value: function removeTerritory(t) {
-      t.mappedPolygons.forEach(function (p) {
-        p.setMap(null);
-      });
+      t.remove();
     }
   }, {
     key: 'addTerritory',
     value: function addTerritory(t) {
-      var _this = this;
-
-      t.polygons.forEach(function (coords) {
-        var polygon = _this.addPolygon(coords);
-        t.mappedPolygons.push(polygon);
-      });
-    }
-  }, {
-    key: 'addPolygon',
-    value: function addPolygon(coords) {
-      var polygon = new google.maps.Polygon({
-        map: window.map,
-        paths: coords,
-        strokeColor: "#FF0000",
-        strokeOpacity: 0.8,
-        strokeWeight: 1,
-        fillColor: "#FF0000",
-        fillOpacity: 0.35,
-        draggable: true,
-        geodesic: true
-      });
-
-      return polygon;
+      t.addPolygons();
     }
   }]);
 

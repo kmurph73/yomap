@@ -1,18 +1,27 @@
 import find from 'lodash/find';
+import map from 'lodash/map';
+import Polygon from 'models/polygon.js';
 
 import {gmapifyPolygons} from './../map_util.js';
 
 class Territory {
   constructor(attrs) {
     this.polygons = [];
-    this.mappedPolygons = [];
 
     Object.assign(this, attrs);
     this.id = this.getId()
   }
 
   getId() {
-   return [this.type, this.abbrev || this.terse].join('-')
+    return [this.type, this.abbrev || this.terse].join('-')
+  }
+
+  remove() {
+    this.polygons.forEach(p => p.remove())
+  }
+
+  addPolygon(polygon) {
+    this.polygons.push(polygon)
   }
 
   friendlyName() {
@@ -66,13 +75,19 @@ class Territory {
     return bounds.getCenter()
   }
 
+  addPolygons() {
+    this.polygons.forEach(p => p.addToMap())
+  }
+
   fetchPoints() {
     let url = this.getURL();
 
     $.getJSON({
       url: url,
       success: (resp) => {
-        this.polygons = gmapifyPolygons(resp.polygons);
+        let coords = gmapifyPolygons(resp.polygons);
+        let polygons = map(coords, c => new Polygon(c, this))
+        this.polygons = polygons;
         window.mapView.addTerritory(this);
       },
       error: (err) => {
